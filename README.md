@@ -17,8 +17,42 @@ $ docker run -it cron-build-and-release
 #   $ cron -f
 ```
 
-- コンテナ内で`gh auth login`を実行してGitHubにログインする必要があります
-  - ヒント：ホストのGitHubトークンをパイプで渡して認証する　`gh auth token | docker exec -i <container> gh auth login --with-token`
+## GitHub認証とトークン
+
+コンテナにはGitHub認証が必要です。環境に応じて適切な方法を選択してください。
+
+### 同一マシン・プライベートサーバーの場合
+
+ホストの`gh auth`トークンを転送できます。
+
+```
+gh auth token | docker exec -i <container> gh auth login --with-token
+```
+
+### 共有マシンで自分のリポジトリの場合
+
+Fine-grained Personal Access Token（PAT）を発行してください。
+
+- Repository access: 対象リポジトリのみ選択
+- Permissions: Contents (Read and write)
+
+### 共有マシンで他者のリポジトリの場合
+
+Fine-grained PATは自分が管理権限を持つリポジトリにしか発行できないため、Classic Personal Access Tokenを使用します。
+
+- スコープ: `repo`, `read:org`
+
+### トークンの転送
+
+シェル履歴にトークンが残らないよう注意してください。
+
+```
+# 標準入力から入力（表示されない）
+read -s TOKEN && echo "$TOKEN" | docker exec -i <container> gh auth login --with-token
+
+# ファイルから転送
+cat /path/to/token-file | docker exec -i <container> gh auth login --with-token
+```
 
 ## run-in-devcontainer.sh／docker-bootstrap.sh
 

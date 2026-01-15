@@ -3,7 +3,7 @@
 set -euo pipefail
 
 DOCKER=/usr/bin/docker
-DEVCONTAINER=/usr/bin/devcontainer
+DEVCONTAINER="npx --yes @devcontainers/cli"
 JQ=/usr/bin/jq
 GREP=/usr/bin/grep
 TAIL=/usr/bin/tail
